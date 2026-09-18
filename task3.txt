@@ -1,0 +1,13 @@
+#!/bin/bash
+mkdir -p /opt/app
+cd /opt/app
+FILE="log.txt"
+MAX=20
+PAUSE=17
+
+while true; do
+    LEN=$(( RANDOM % MAX + 1 ))
+    RAND=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c "$LEN")
+    printf '%s\n' "$RAND" >> "$FILE"
+    sleep "$PAUSE"
+done
