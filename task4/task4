@@ -1,0 +1,17 @@
+#!/bin/bash
+# В качестве параметра $1 передаётся адрес домена
+set -euo pipefail
+
+HOST=$1
+
+if ! ping -c 1 -W 2 "$HOST" >/dev/null 2>&1; then
+    echo "Хост $HOST не отвечает на ICMP" >&2
+fi
+
+if curl -fsS --max-time 5 -o /dev/null "http://$HOST/"; then
+   echo "Сервис на $HOST доступен"
+else
+    echo "Сервис на $HOST недоступен" >&2
+    exit 1
+fi
+
