@@ -1,0 +1,3 @@
+dima@fedora:~/ansible_quickstart$ ansible-lint playbook.yaml
+Passed: 0 failure(s), 0 warning(s) in 1 files processed of 1 encountered. Last profile that met the validation criteria was 'production'.
+

@@ -1,0 +1,30 @@
+---
+- name: Prepare VM for work
+  hosts: myhosts
+  remote_user: root
+
+  tasks:
+    - name: Update all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+        update_only: true
+        disablerepo: fedora-cisco-openh264
+
+    - name: Install nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: latest
+        only_upgrade: true
+
+    - name: Make sure nginx is running
+      ansible.builtin.systemd_service:
+        name: nginx
+        enabled: true
+        state: started
+
+    - name: Template nginx config file
+      ansible.builtin.template:
+        src: /mytemplates/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        mode: preserve
