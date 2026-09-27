@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+
+# 1 этап: сборка
+FROM node:10-alpine AS builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# 2 этап раздача
+FROM nginx:alpine
+COPY --from=builder /app/dist/kanban-ui /usr/share/nginx/html
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+
+# 3 этап
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,30 @@
+services:
+
+  kanban-postgres:
+    image: postgres:12
+    container_name: kanban-db
+    environment:
+      POSTGRES_DB: kanban
+      POSTGRES_USER: kanban
+      POSTGRES_PASSWORD: kanban
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kanban -d kanban"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    image: kanban-backend-develop:latest
+    container_name: kanban-backend
+    ports:
+      - "8081:8080"
+    depends_on:
+      kanban-postgres:
+        condition: service_healthy
+
+  frontend:
+    image: kanban-ui:1.0
+    container_name: kanban-ui
+    ports:
+      - "8080:80"
