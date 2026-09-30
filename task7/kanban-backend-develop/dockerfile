@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+
+# 1 этап: сборка
+FROM maven:3.6.3-jdk-8 AS build
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+COPY src ./src
+RUN mvn -B clean package -DskipTests
+
+# 2 этап
+FROM eclipse-temurin:8-jre
+WORKDIR /app
+
+# 3 этап
+
+COPY --from=build /app/target/kanban-app-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
